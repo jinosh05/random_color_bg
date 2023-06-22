@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 /// Widget Where the UI is going to be presented
@@ -17,23 +19,34 @@ class _HomePageState extends State<HomePage> {
     final fontSize = height * 0.012;
     const blurRadiusCount = 3;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: const Text(
-          "Rabdom Colors",
-        ),
-      ),
-      body: ValueListenableBuilder<Color>(
-        valueListenable: colorNotifier,
-        builder: (context, Color value, child) {
-          return Column(
+    return ValueListenableBuilder<Color>(
+      valueListenable: colorNotifier,
+      builder: (context, Color value, child) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.purple,
+            title: const Text(
+              "Rabdom Colors",
+            ),
+          ),
+          backgroundColor: colorNotifier.value,
+          body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () {},
-                child: const Text(
+                onPressed: _generateColor,
+                child: Text(
                   "Hello there",
+                  style: TextStyle(
+                    color: Colors.black,
+                    shadows: [
+                      for (double i = 1; i <= blurRadiusCount; i++)
+                        Shadow(
+                          color: Colors.yellow,
+                          blurRadius: blurRadiusCount * i,
+                        )
+                    ],
+                  ),
                 ),
               ),
               Center(
@@ -54,9 +67,14 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
+  }
+
+  void _generateColor() {
+    final generatedColor = Random().nextInt(Colors.primaries.length);
+    colorNotifier.value = Colors.primaries[generatedColor];
   }
 }
